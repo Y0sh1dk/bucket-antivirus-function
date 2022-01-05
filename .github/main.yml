@@ -1,0 +1,46 @@
+name: bucket-antivirus-function Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    name: "Build Lambda and Release"
+    runs-on: ubuntu-20.04
+
+    steps:
+      # Cancels previously running jobs
+      - name: Cancel Workflow Action
+        uses: styfle/cancel-workflow-action@0.9.1
+
+      # Checkout repo to $GITHUB_WORKSPACE
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Build Lambda
+        run: make all
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Upload Release Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/lambda.zip
+          asset_name: lambda.zip
+          asset_content_type: application/zip
