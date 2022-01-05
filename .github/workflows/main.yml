@@ -1,0 +1,23 @@
+name: bucket-antivirus-function CI
+
+on:
+  push:
+    branches: ["master", "gh-actions"]
+
+jobs:
+  release:
+    name: "Make Release"
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      # Cancels previously running jobs
+      - name: Cancel Workflow Action
+        uses: styfle/cancel-workflow-action@0.9.1
+
+      # Checkout repo to $GITHUB_WORKSPACE
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Build Lambda zip
+        run: make lambda
