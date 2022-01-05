@@ -21,3 +21,9 @@ jobs:
 
       - name: Build Lambda zip
         run: make archive
+
+      - name: Upload Lambda zip
+        uses: actions/upload-artifact@v2
+        with: 
+          name: lambda
+          path: build/lambda.zip
