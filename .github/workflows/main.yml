@@ -1,13 +1,13 @@
-name: bucket-antivirus-function CI
+name: bucket-antivirus-function release
 
 on:
   push:
-    branches: ["master", "gh-actions"]
+    tags:
+      - '*'
 
 jobs:
   release:
     name: "Make Release"
-
     runs-on: ubuntu-20.04
 
     steps:
@@ -18,12 +18,34 @@ jobs:
       # Checkout repo to $GITHUB_WORKSPACE
       - name: Checkout Repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Build Lambda zip
-        run: make archive
+        run: make all
 
       - name: Upload Lambda zip
         uses: actions/upload-artifact@v2
         with: 
           name: lambda
           path: build/lambda.zip
+
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: upload release artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/lambda.zip
+          asset_name: lambda.zip
