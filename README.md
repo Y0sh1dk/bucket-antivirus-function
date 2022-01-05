@@ -1,6 +1,6 @@
 # bucket-antivirus-function
 
-[![CircleCI](https://circleci.com/gh/upsidetravel/bucket-antivirus-function.svg?style=svg)](https://circleci.com/gh/upsidetravel/bucket-antivirus-function)
+[![bucket-antivirus-function Release](https://github.com/Y0sh1dk/bucket-antivirus-function/actions/workflows/main.yml/badge.svg)](https://github.com/Y0sh1dk/bucket-antivirus-function/actions/workflows/main.yml)
 
 Scan new objects added to any s3 bucket using AWS Lambda. [more details in this post](https://engineering.upside.com/s3-antivirus-scanning-with-lambda-and-clamav-7d33f9c5092e)
 

@@ -1,4 +1,4 @@
-name: bucket-antivirus-function release
+name: bucket-antivirus-function Release
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: "Make Release"
+    name: "Build Lambda and Release"
     runs-on: ubuntu-20.04
 
     steps:
@@ -21,16 +21,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build Lambda zip
+      - name: Build Lambda
         run: make all
 
-      - name: Upload Lambda zip
-        uses: actions/upload-artifact@v2
-        with: 
-          name: lambda
-          path: build/lambda.zip
-
-      - name: release
+      - name: Create Release
         uses: actions/create-release@v1
         id: create_release
         with:
@@ -41,7 +35,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - name: upload release artifact
+      - name: Upload Release Artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
