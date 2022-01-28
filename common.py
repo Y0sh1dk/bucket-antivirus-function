@@ -17,6 +17,7 @@ import errno
 import datetime
 import os
 import os.path
+from distutils.util import strtobool
 
 AV_DEFINITION_S3_BUCKET = os.getenv("AV_DEFINITION_S3_BUCKET")
 AV_DEFINITION_S3_PREFIX = os.getenv("AV_DEFINITION_S3_PREFIX", "clamav_defs")
@@ -41,6 +42,9 @@ AV_PROCESS_ORIGINAL_VERSION_ONLY = os.getenv(
 )
 AV_DELETE_INFECTED_FILES = os.getenv("AV_DELETE_INFECTED_FILES", "False")
 
+SLACK_NOTIFICATION_WEBHOOK_URL = os.getenv("SLACK_NOTIFICATION_WEBHOOK_URL")
+SLACK_NOTIFICATION_ON_CLEAN = os.getenv("SLACK_NOTIFICATION_ON_CLEAN", "False")
+
 AV_DEFINITION_FILE_PREFIXES = ["main", "daily", "bytecode"]
 AV_DEFINITION_FILE_SUFFIXES = ["cld", "cvd"]
 
@@ -57,3 +61,6 @@ def create_dir(path):
 
 def get_timestamp():
     return datetime.datetime.utcnow().strftime("%Y/%m/%d %H:%M:%S UTC")
+
+def str_to_bool(s):
+    return bool(strtobool(str(s)))

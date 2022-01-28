@@ -17,7 +17,6 @@ import copy
 import json
 import os
 from urllib.parse import unquote_plus
-from distutils.util import strtobool
 
 import boto3
 
@@ -39,6 +38,7 @@ from common import AV_STATUS_SNS_PUBLISH_INFECTED
 from common import AV_TIMESTAMP_METADATA
 from common import create_dir
 from common import get_timestamp
+from common import str_to_bool
 
 
 def event_object(event, event_source="s3"):
@@ -259,6 +259,11 @@ def lambda_handler(event, context):
     metrics.send(
         env=ENV, bucket=s3_object.bucket_name, key=s3_object.key, status=scan_result
     )
+
+    metrics.slack_notification(
+        env=ENV, bucket=s3_object.bucket_name, key=s3_object.key, status=scan_result
+    )
+
     # Delete downloaded file to free up room on re-usable lambda function container
     try:
         os.remove(file_path)
@@ -268,7 +273,3 @@ def lambda_handler(event, context):
         delete_s3_object(s3_object)
     stop_scan_time = get_timestamp()
     print("Script finished at %s\n" % stop_scan_time)
-
-
-def str_to_bool(s):
-    return bool(strtobool(str(s)))
